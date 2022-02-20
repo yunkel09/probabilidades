@@ -1,0 +1,121 @@
+---
+title: "Untitled"
+author: "William Chavarría"
+date: "2/19/2022"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+options(pillar.sigfig    = 9,
+        tibble.print_min = 10,
+        scipen = 999,
+        digits = 7,
+        readr.show_col_types = FALSE,
+        dplyr.summarise.inform = FALSE)
+```   
+
+
+
+Ejercicio 1.- El 30% de un determinado pueblo ve un concurso que hay en
+televisión. Desde el concurso se llama por teléfono a 10 personas del pueblo
+elegidas al azar. Calcular la probabilidad de que, entre las 10 personas,
+estuvieran viendo el programa:
+
+a) Más de ocho personas
+b) Algunas de las diez personas
+
+
+p = 0.3
+n = 10 (total de muestra que tenemos)
+
+
+
+```{r}
+# a (x > 8)
+sum(dbinom(x = 9:10, size = 10, prob = 0.3))
+```
+
+```{r}
+#b p(x >= 1)
+sum(dbinom(x = 1:10, size = 10, prob = 0.3))
+```
+
+Ejercicio 2.- Para El tiempo empleado, en horas, en hacer un determinado
+producto sigue una distribución N(10, 2) . Se pide la probabilidad de que ese
+producto se tarde en hacer:
+
+a) Menos de 7 horas
+b) Entre 8 y 13 horas
+
+
+```{r}
+# a
+pnorm(q = 7, mean = 10, sd = 2)
+```
+
+```{r}
+# b # P(-a < Z > b) = P(Z <= b) - [1 - P(Z <= a)]
+pnorm(q = 13, mean = 10, sd = 2) - pnorm(q = 8, mean = 10, sd = 2)
+```
+
+
+Ejercicio 3.- El 7% de los pantalones de una determinada marca salen con algún
+defecto. Se empaquetan en caja de 80 pantalones para diferentes tiendas. ¿Cuál
+es la probabilidad de que en una caja haya entre 8 y 10 pantalones defectuosos?
+
+```{r}
+# p(8<=x<=10) = p(X = 8) + P(X = 9) + P(X = 10)
+sum(dbinom(x = 8:10, size = 80, prob = 0.07))
+```
+
+
+Ejercicio 4.- Un servicio dedicado a la reparación de electrodomésticos por
+garantía recibe por término medio 15 llamadas diarias. Para cubrir la demanda,
+se dispone de 20 técnicos para realizar las visitas. Dado que la garantía obliga
+a atender todos los casos, cuando no hay técnicos disponibles, se debe
+subcontratar el servicio con un tercero y eso le cuesta a la empresa el doble
+del costo normal. Si la empresa trabaja 300 días por año, ¿en cuantos días se
+requerirá recurrir a subcontratar el servicio?
+
+
+
+```{r}
+(ppois(q = 20, lambda = 15, lower.tail = F) * 300) |> ceiling()
+```
+
+
+Ejercicio 5.- Una empresa que se dedica a pintar casas ha determinado, en
+función a datos históricos que el tiempo en pintar una casa, considerando los
+distintos tamaños y tipos de viviendas, tiene un tiempo mínimo de 5 días, un
+máximo de 12 días y un valor más probable de 8 días. Para simplificar su sistema
+de cobro, ha decidido utilizar 10 días para calcular sus costos y se basa en eso
+para cobrar, por lo que si se tarda más, incurrirá en pérdidas. Si se pintan
+aproximadamente 150 casas por año. 
+
+
+
+a) ¿en cuántas de esas casas la empresa sale perdiendo?
+
+b) ¿Cuántas casas debería usar como base de cálculo para asegurarse que su
+probabilidad de pérdida sea no mayor al 3%?
+
+```{r}
+library(triangle)
+```
+
+```{r}
+(1 - ptriangle(q = 10, a = 5, b = 12, c = 8)) * 150
+```
+
+```{r}
+m <- qtriangle(p = 0.97, a = 5, b = 12, c = 8)
+round(ptriangle(q = m, a = 5, b = 12, c = 8) * 150)
+```
+
